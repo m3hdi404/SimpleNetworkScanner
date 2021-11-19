@@ -1,17 +1,19 @@
 #!/usr/bin/env python3
 
-# This Is A Progtam To Scan All Hosts In Network
-# Just Give sudo Permision
-# Arguments : Network Gateway, Network Interface
+# This Is A Progtam To Scan All Hosts In Network.
+# Just Give sudo Permision.
+# Arguments : Network Gateway, Network Interface.
+# Ex: sudo python3 scan.py 192.168.1.1 wlp2s0
 
 import scapy.all as sc
 import sys
 
-
+# Scan The Network Using ARP Packets
 def scan(ip,interf):
     arp = sc.ARP(pdst=ip)
     ether = sc.Ether(dst='ff:ff:ff:ff:ff:ff')
     frame = ether / arp
+	# Broadcast Packets And Save Responses
     answer = sc.srp(frame, timeout=5, verbose=False, iface=interf)[0]
     res_list = []
     for i in range(0,len(answer)):
@@ -19,11 +21,11 @@ def scan(ip,interf):
         res_list.append(client_dict)
     return res_list
 
-
 def result_print(reslist):
     print("-----------------------------------\nIP Address\tMAC Address\n-----------------------------------")
     for element in reslist:
         print("{}\t{}".format(element["ip"], element["mac"]))
+
 
 ip_range = sys.argv[1] + '/24'
 interface = sys.argv[2]
